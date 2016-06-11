@@ -1,0 +1,28 @@
+<html>
+<head>
+<TITLE>Task 2</TITLE>
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+	temperatureAjax();
+	
+	function temperatureAjax() {
+		$.ajax({
+			url : 'temperature',
+			success : function(data) {
+				$('#result').html(data);
+			}
+		});
+	}
+	
+	window.setInterval(function() {
+		temperatureAjax();
+	}, 5000);
+</script>
+</head>
+<body>
+	<div align="center">
+		<div id="result"></div>
+	</div>
+</body>
+</html>
