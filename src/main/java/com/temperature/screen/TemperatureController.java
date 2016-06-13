@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.OptionalDouble;
+
 @RestController
 public class TemperatureController {
 
@@ -15,7 +18,15 @@ public class TemperatureController {
 	@RequestMapping(value="/temperature")
 	@ResponseBody
 	public String getTemperature() {
-		return temperatureRepository.findFirstByOrderByIdDesc().toString();
+		List<TemperatureData> temperatureLastHour = temperatureRepository.findTop600ByOrderByIdDesc();
+
+		OptionalDouble averageTemperature = temperatureLastHour
+				.stream()
+				.mapToDouble(TemperatureData::getTemperature)
+				.average();
+
+		return averageTemperature.isPresent() ?
+				String.format("%.2f", averageTemperature.getAsDouble()) : "---";
 	}
 	
 	@Scheduled(fixedRate=10000)
